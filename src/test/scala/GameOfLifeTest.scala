@@ -2,6 +2,11 @@ import Main.GameOfLife
 import org.specs2.mutable._
 
 class GameOfLifeTest extends SpecificationWithJUnit {
+
+  def fromLines(lines: List[String]) : (Int, Int) => Boolean = {
+    (x:Int, y:Int) => { lines(y+1).charAt(x+1) == '*' }
+  }
+
   "evolve" should {
     "empty world stays empty after being evolved" in {
       GameOfLife.evolve((_: Int, _: Int) => false)(0, 0) === false
@@ -20,7 +25,63 @@ class GameOfLifeTest extends SpecificationWithJUnit {
     }
 
     "dead cell wont be spawned with two neighbours" in {
-      GameOfLife.evolve((x: Int, y: Int) => x == 0 && y != 0)(0, 0) === false
+      val state = fromLines(List(
+        ".*.",
+        "...",
+        ".*."
+      ))
+
+      GameOfLife.evolve(state)(0, 0) === false
+    }
+
+    "cell stays alive with two neighbours horizontally" in {
+      val state = fromLines(List(
+        "...",
+        "***",
+        "..."
+      ))
+
+      GameOfLife.evolve(state)(0, 0) === true
+    }
+
+    "cell stays alive with two neighbours right diagonal" in {
+      val state = fromLines(List(
+        "..*",
+        ".*.",
+        "*.."
+      ))
+
+      GameOfLife.evolve(state)(0, 0) === true
+    }
+
+    "cell stays alive with two neighbours left diagonal" in {
+      val state = fromLines(List(
+        "*..",
+        ".*.",
+        "..*"
+      ))
+
+      GameOfLife.evolve(state)(0, 0) === true
+    }
+
+    "cell stays alive with three neighbours left diagonal and up" in {
+      val state = fromLines(List(
+        "**.",
+        ".*.",
+        "..*"
+      ))
+
+      GameOfLife.evolve(state)(0, 0) === true
+    }
+
+    "cell spawns with three neighbours left diagonal and up" in {
+      val state = fromLines(List(
+        "**.",
+        "...",
+        "..*"
+      ))
+
+      GameOfLife.evolve(state)(0, 0) === true
     }
   }
 }
