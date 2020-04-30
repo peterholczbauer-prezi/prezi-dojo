@@ -4,8 +4,16 @@ import org.specs2.mutable._
 class GameOfLifeTest extends SpecificationWithJUnit {
 
   def fromLines(lines: List[String]) : (Int, Int) => Boolean = {
-    (x:Int, y:Int) => { lines(y+1).charAt(x+1) == '*' }
+    (x:Int, y:Int) => {
+      if(x < -1 || y < -1 || x > 1 || y > 1)
+        false
+      else
+        lines(y+1).charAt(x+1) == '*'
+    }
   }
+
+  def translate(dx: Int, dy: Int)(state: (Int, Int) => Boolean): (Int,Int) => Boolean =
+    (x:Int, y:Int) => state(x - dx, y - dy)
 
   "evolve" should {
     "empty world stays empty after being evolved" in {
@@ -82,6 +90,31 @@ class GameOfLifeTest extends SpecificationWithJUnit {
       ))
 
       GameOfLife.evolve(state)(0, 0) === true
+    }
+
+
+    "spawning also works for non 0,0 cells" in {
+      val state = translate(10, 20)(fromLines(List(
+              "**.",
+              "...",
+              "..*"
+            )))
+
+      val r = state(9,19)
+
+
+      GameOfLife.evolve(state)(10, 20) === true
+    }
+
+
+    "cell stays alive with two neighbours even for non 0,0" in {
+      val state = translate(10, 20)(fromLines(List(
+        "...",
+        "***",
+        "..."
+      )))
+
+      GameOfLife.evolve(state)(10, 20) === true
     }
   }
 }
