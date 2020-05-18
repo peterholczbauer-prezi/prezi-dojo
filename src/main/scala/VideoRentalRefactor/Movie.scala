@@ -1,23 +1,37 @@
 package VideoRentalRefactor
 
-class Movie(val title: String, val priceCode: PriceCode) {
+abstract class Movie(val title: String) {
+  def amount(daysRented: Int): Double
 
+  def points(daysRented: Int) = {
+    1
+  }
 }
 
-sealed trait PriceCode {
-  val value: Integer
+class RegularMovie(title: String) extends Movie(title) {
+  override def amount(daysRented: Int) = {
+    if (daysRented > 2) {
+      2 + (daysRented - 2) * 1.5
+    } else {
+      2.0
+    }
+  }
 }
 
-object PriceCode {
-  case object Regular extends PriceCode {
-    override val value = 0
+class NewReleaseMovie(title: String) extends Movie(title) {
+  override def amount(daysRented: Int) = {
+    daysRented * 3.0
   }
 
-  case object NewRelease extends PriceCode {
-    override val value = 1
-  }
+  override def points(daysRented: Int): Int = if (daysRented > 1) 2 else super.points(daysRented)
+}
 
-  case object Childrens extends PriceCode {
-    override val value = 2
+class ChildrensMovie(title: String) extends Movie(title) {
+  override def amount(daysRented: Int) = {
+    if (daysRented > 3) {
+      1.5 + (daysRented - 3) * 1.5
+    } else {
+      1.5
+    }
   }
 }
