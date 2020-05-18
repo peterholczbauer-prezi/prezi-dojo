@@ -1,13 +1,14 @@
 package VideoRentalRefactor
 
-class Rental(val movie: Movie, val daysRented: Integer) {
+import scala.collection.mutable.ListBuffer
 
-  def amount() = {
-    movie.amount(daysRented)
-  }
+case class Rental(customer: Customer) { // Bad Name
+  private[this] val items: ListBuffer[RentalItem] = ListBuffer()
 
-  def points() = {
-    movie.points(daysRented)
-  }
+  def rentals: List[RentalItem] = items.toList
+
+  def addItem(rental: RentalItem): Unit = { items += rental }
+
+  def totalAmount(): Double = this.rentals.map(_.amount).sum
+  def frequentRenterPoints(): Int = this.rentals.map(_.frequentRenterPoints).sum
 }
-
