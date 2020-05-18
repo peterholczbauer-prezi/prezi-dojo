@@ -1,29 +1,14 @@
 package VideoRentalRefactor
 
-class Rental(val movie: Movie, val priceCode: PriceCode, val daysRented: Integer) {
+import scala.collection.mutable.ListBuffer
 
-  def amount() : Double = {
-    priceCode match {
-      case PriceCode.Regular => {
-        if (daysRented > 2) {
-          2 + (daysRented - 2) * 1.5
-        } else {
-          2
-        }
-      }
-      case PriceCode.NewRelease => {
-        daysRented * 3
-      }
-      case PriceCode.Childrens => {
-        if (daysRented > 3) {
-          1.5 + (daysRented - 3) * 1.5
-        } else {
-          1.5
-        }
-      }
-    }
-  }
+case class Rental(customer: Customer) { // Bad Name
+  private[this] val items: ListBuffer[RentalItem] = ListBuffer()
 
-  def frequentRenterPoints(): Int = if (priceCode == PriceCode.NewRelease && daysRented > 1) 2 else 1
+  def rentals: List[RentalItem] = items.toList
+
+  def addItem(rental: RentalItem): Unit = { items += rental }
+
+  def totalAmount(): Double = this.rentals.map(_.amount).sum
+  def frequentRenterPoints(): Int = this.rentals.map(_.frequentRenterPoints).sum
 }
-
