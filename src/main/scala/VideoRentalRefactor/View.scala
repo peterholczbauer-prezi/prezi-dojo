@@ -1,16 +1,16 @@
 package VideoRentalRefactor
 
 trait View {
-  def render(rentalRecord: RentalRecord): String
+  def render(rentalRecord: Rental): String
 }
 
 case class StringView() extends View {
-  def render(rentalRecord: RentalRecord): String = {
-    "Rental Record for " + rentalRecord.customer.name + "\n" +
-    rentalRecord.rentals.map(rental => {
-      "\t" + rental.movie.title + "\t" + rental.amount() + "\n"
+  def render(rental: Rental): String = {
+    "Rental Record for " + rental.customer.name + "\n" +
+    rental.rentals.map(rental => {
+      "\t" + rental.movie.title + "\t" + rental.amount + "\n"
     }).mkString("") +
-    "Amount owed is " + rentalRecord.totalAmount + "\n" +
-    "You earned "  + rentalRecord.frequentRenterPoints + " frequent renter points"
+    "Amount owed is " + rental.totalAmount + "\n" +
+    "You earned "  + rental.frequentRenterPoints + " frequent renter points"
   }
 }
