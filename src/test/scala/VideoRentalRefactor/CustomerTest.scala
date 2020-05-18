@@ -11,7 +11,7 @@ class CustomerTest extends SpecificationWithJUnit {
 
       rentalRecord.addRental(new Rental(new Movie("Rambo 1"), PriceCode.Childrens, 1))
 
-     stringView.render(rentalRecord) === "Rental Record for Joe\n\tRambo 1	1.5\nAmount owed is 1.5\nYou earned 1 frequent renter points"
+      stringView.render(rentalRecord) === "Rental Record for Joe\n\tRambo 1	1.5\nAmount owed is 1.5\nYou earned 1 frequent renter points"
     }
 
     "generate statement for two rentals for a day" in {
